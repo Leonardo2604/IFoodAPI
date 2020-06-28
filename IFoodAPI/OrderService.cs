@@ -100,5 +100,41 @@ namespace IFoodAPI
             request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
             await ApiService.SendAsync(request);
         }
+
+        /// <summary>
+        /// Aceita a solicitação de cancelamento feita pelo cliente.
+        /// Em algumas situações, o cliente pode solicitar o cancelamento de um pedido. Quando isso acontece, a loja recebe um evento "CANCELLATION_REQUESTED" e pode aceitar o cancelamento através desse endpoint.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static async Task ChangeStatusToCancellationAccepted(Order order)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationAccepted");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            await ApiService.SendAsync(request);
+        }
+
+        /// <summary>
+        /// Rejeita a solicitação de cancelamento feita pelo cliente.
+        /// Em algumas situações, o cliente pode solicitar o cancelamento de um pedido. Quando isso acontece, a loja recebe um evento "CANCELLATION_REQUESTED" e pode negar o cancelamento através desse endpoint.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static async Task ChangeStatusToCancellationDenied(Order order)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationDenied");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            await ApiService.SendAsync(request);
+        }
     }
 }

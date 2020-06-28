@@ -14,8 +14,10 @@ namespace IFoodAPI
         {
             if (_httpClient == null)
             {
-                HttpClient client = new HttpClient();
-                client.BaseAddress = new Uri(_baseUrl);
+                HttpClient client = new HttpClient
+                {
+                    BaseAddress = new Uri(_baseUrl)
+                };
                 _httpClient = client;
             }
 
