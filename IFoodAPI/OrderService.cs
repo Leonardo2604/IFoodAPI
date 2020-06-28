@@ -157,5 +157,29 @@ namespace IFoodAPI
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             await ApiService.SendAsync(request);
         }
+
+        /// <summary>
+        /// Permite obter a posição do Entregador
+        /// 
+        /// Esse endpoint permite obter informações sobre o entregador e a sua posição e só retorna os dados do entregador quando a entrega é feita pelo iFood.
+        /// 
+        /// Deve ser utilizado somente depois que o evento ASSIGN_DRIVER é gerado e pode ser consultado de 30 em 30 segundos. Em caso de mal uso pode ser bloqueado pelas políticas de rate limit e throttling.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static async Task<Tracking> TrackDelivery(Order order)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/orders/{order.Reference}/tracking");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response = await ApiService.SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Tracking>(content);
+        }
     }
 }

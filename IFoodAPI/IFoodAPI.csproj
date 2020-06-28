@@ -67,6 +67,7 @@
     <Compile Include="Models\ReasonCancelation.cs" />
     <Compile Include="Models\SponsorshipValues.cs" />
     <Compile Include="Models\Token.cs" />
+    <Compile Include="Models\Tracking.cs" />
     <Compile Include="OrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
