@@ -1,6 +1,7 @@
 ﻿using IFoodAPI.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -134,6 +135,26 @@ namespace IFoodAPI
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationDenied");
             request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            await ApiService.SendAsync(request);
+        }
+
+        /// <summary>
+        /// Informa ao IFood que o pedido está pronto para retirada.
+        /// Esse endpoint gera um evento READY_TO_DELIVER.
+        /// Para pedidos ToGo, o cliente será notificado no app informando que o pedido está pronto para ser retirado.Para pedidos com entrega IFood, logística será notificada para notificar o entregador.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public static async Task ChangeStatusToReadyToDeliver(Order order)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/readyToDeliver");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             await ApiService.SendAsync(request);
         }
     }
