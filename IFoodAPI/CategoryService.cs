@@ -151,5 +151,38 @@ namespace IFoodAPI
             request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
             await ApiService.SendAsync(request);
         }
+
+        /// <summary>
+        /// Linka Categoria Pai ao item pai
+        /// <see href="https://developer.ifood.com.br/reference#categoriesexternal_codeskuslink">Referencia</see>
+        /// </summary>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public static async Task LinkSku(Category category, Sku sku)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/categories/{category.ExternalCode}/skus:link");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                externalCode = sku.ExternalCode,
+                merchantId = IFoodAPIService.Config.MerchantId,
+                order = sku.Sequence
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
     }
 }

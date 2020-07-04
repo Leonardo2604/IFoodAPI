@@ -5,8 +5,17 @@ namespace IFoodAPI.Models
 {
     public class Sku
     {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("merchantId")]
+        public string MerchantId { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("externalCode")]
+        public string ExternalCode { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }
@@ -25,5 +34,11 @@ namespace IFoodAPI.Models
 
         [JsonProperty("sequence")]
         public int Sequence { get; set; }
+
+        [JsonProperty("ean")]
+        public string Ean { get; set; }
+
+        [JsonProperty("sellingOption")]
+        public SellingOption SellingOption { get; set; }
     }
 }

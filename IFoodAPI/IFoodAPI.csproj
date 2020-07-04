@@ -74,6 +74,7 @@
     <Compile Include="Models\ReasonCancelation.cs" />
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Schedule.cs" />
+    <Compile Include="Models\SellingOption.cs" />
     <Compile Include="Models\Sku.cs" />
     <Compile Include="Models\SponsorshipValues.cs" />
     <Compile Include="Models\Token.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="OrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestaurantService.cs" />
+    <Compile Include="SkuService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
