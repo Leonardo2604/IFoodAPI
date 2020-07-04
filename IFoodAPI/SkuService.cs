@@ -82,8 +82,10 @@ namespace IFoodAPI
 
             string requestContent = JsonConvert.SerializeObject(data);
 
-            MultipartFormDataContent content = new MultipartFormDataContent();
-            content.Add(new StringContent(requestContent, Encoding.UTF8, "application/json"), "\"sku\"");
+            MultipartFormDataContent content = new MultipartFormDataContent
+            {
+                { new StringContent(requestContent, Encoding.UTF8, "application/json"), "\"sku\"" }
+            };
 
             request.Content = content;
 
