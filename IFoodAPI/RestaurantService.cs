@@ -1,7 +1,6 @@
 ﻿using IFoodAPI.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -17,14 +16,19 @@ namespace IFoodAPI
         /// </summary>
         /// <param name="merchantId"></param>
         /// <returns></returns>
-        public static async Task<List<Unavailability>> GetUnavailabilities(Merchant merchant)
+        public static async Task<List<Unavailability>> GetUnavailabilities()
         {
             if (AuthService.Token == null)
             {
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{merchant.Id}/unavailabilities");
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{IFoodAPIService.Config.MerchantId}/unavailabilities");
             request.Headers.Add("Authorization", AuthService.Token.FullToken);
             HttpResponseMessage response = await ApiService.SendAsync(request);
             string content = await response.Content.ReadAsStringAsync();
@@ -38,14 +42,19 @@ namespace IFoodAPI
         /// <param name="merchantId"></param>
         /// <param name="unavailability"></param>
         /// <returns></returns>
-        public static async Task DeleteUnavailability(Merchant merchant, Unavailability unavailability)
+        public static async Task DeleteUnavailability(Unavailability unavailability)
         {
             if (AuthService.Token == null)
             {
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{merchant.Id}/unavailabilities/{unavailability.Id}");
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{IFoodAPIService.Config.MerchantId}/unavailabilities/{unavailability.Id}");
             request.Headers.Add("Authorization", AuthService.Token.FullToken);
             await ApiService.SendAsync(request);
         }
