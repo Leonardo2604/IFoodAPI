@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace IFoodAPI.Models
 {
@@ -27,6 +28,9 @@ namespace IFoodAPI.Models
 
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [JsonProperty("skus")]
+        public List<Sku> Skus { get; set; }
 
         public Category(string name, string description, string externalCode, string availability, int order)
         {

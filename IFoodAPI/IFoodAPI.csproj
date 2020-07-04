@@ -56,6 +56,8 @@
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Benefit.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Complement.cs" />
+    <Compile Include="Models\ComplementOption.cs" />
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\Coordinates.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -68,7 +70,11 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\OrderSubItem.cs" />
+    <Compile Include="Models\Price.cs" />
     <Compile Include="Models\ReasonCancelation.cs" />
+    <Compile Include="Models\Reference.cs" />
+    <Compile Include="Models\Schedule.cs" />
+    <Compile Include="Models\Sku.cs" />
     <Compile Include="Models\SponsorshipValues.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Tracking.cs" />
