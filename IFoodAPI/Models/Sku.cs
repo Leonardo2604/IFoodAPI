@@ -21,7 +21,7 @@ namespace IFoodAPI.Models
         public Price Price { get; set; }
 
         [JsonProperty("categories")]
-        public Reference Category { get; set; }
+        public List<Reference> Category { get; set; }
 
         [JsonProperty("sequence")]
         public int Sequence { get; set; }

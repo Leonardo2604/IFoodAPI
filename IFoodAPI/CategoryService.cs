@@ -36,6 +36,32 @@ namespace IFoodAPI
         }
 
         /// <summary>
+        /// Lista todos os itens de uma categoria
+        /// <see href="https://developer.ifood.com.br/reference#categories2">Referencia</see>
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public static async Task<Category> GetWithSkus(Category category)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories/{category.Id}");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            HttpResponseMessage response = await ApiService.SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Category>(content);
+        }
+
+        /// <summary>
         /// Cria uma categoria dentro do cardápio
         /// <see href="https://developer.ifood.com.br/reference#cadastrar-categoria">Referencia</see>
         /// </summary>
