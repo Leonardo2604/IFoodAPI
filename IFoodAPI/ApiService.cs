@@ -28,9 +28,10 @@ namespace IFoodAPI
         {
             HttpClient client = GetInstance();
             HttpResponseMessage response = await client.SendAsync(request);
-
+            
             if (!response.IsSuccessStatusCode)
             {
+                string content = await response.Content.ReadAsStringAsync();
                 throw new RequestException("Falha na requisição", (int)response.StatusCode);
             }
 

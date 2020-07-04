@@ -1,0 +1,129 @@
+﻿using IFoodAPI.Models;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IFoodAPI
+{
+    public static class CategoryService
+    {
+        /// <summary>
+        /// Lista todas as categorias do cardápio de um restaurante.
+        /// <see href="https://developer.ifood.com.br/reference#categories">Referencia</see>
+        /// </summary>
+        /// <param name="merchantId"></param>
+        /// <returns></returns>
+        public static async Task<List<Category>> GetAll()
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            HttpResponseMessage response = await ApiService.SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Category>>(content);
+        }
+
+        /// <summary>
+        /// Cria uma categoria dentro do cardápio
+        /// <see href="https://developer.ifood.com.br/reference#cadastrar-categoria">Referencia</see>
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public static async Task Create(Category category)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/categories");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new 
+            {
+                merchantId = IFoodAPIService.Config.MerchantId,
+                availability = category.Availability,
+                name = category.Name,
+                order = category.Order,
+                template = category.Template,
+                externalCode = category.ExternalCode
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+
+        /// <summary>
+        /// Atualiza uma categoria existente
+        /// <see href="https://developer.ifood.com.br/reference#categories-1">Referencia</see>
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public static async Task Update(Category category)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                merchantId = IFoodAPIService.Config.MerchantId,
+                availability = category.Availability,
+                name = category.Name,
+                order = category.Order,
+                template = category.Template,
+                externalCode = category.ExternalCode
+            };
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+
+        /// <summary>
+        /// Deletar uma categoria dentro do cardápio
+        /// <see href="https://developer.ifood.com.br/reference#deletar-categoria">Referencia</see>
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public static async Task Delete(Category category)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                merchantId = IFoodAPIService.Config.MerchantId,
+                availability = "DELETED",
+                name = category.Name,
+                order = category.Order,
+                template = category.Template,
+                externalCode = category.ExternalCode,
+            };
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+    }
+}
