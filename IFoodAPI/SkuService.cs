@@ -1,6 +1,5 @@
 ﻿using IFoodAPI.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Net.Http;
@@ -11,7 +10,7 @@ namespace IFoodAPI
 {
     public static class SkuService
     {
-        public static async Task<List<Complement>> GetComplements(Sku sku)
+        public static async Task<List<OptionGroup>> GetComplements(Sku sku)
         {
             if (AuthService.Token == null)
             {
@@ -27,7 +26,7 @@ namespace IFoodAPI
             request.Headers.Add("Authorization", AuthService.Token.FullToken);
             HttpResponseMessage response = await ApiService.SendAsync(request);
             string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Complement>>(content);
+            return JsonConvert.DeserializeObject<List<OptionGroup>>(content);
         }
 
         public static async Task Create(Sku sku)
@@ -89,6 +88,35 @@ namespace IFoodAPI
 
             request.Content = content;
 
+            await ApiService.SendAsync(request);
+        }
+
+        public static async Task LinkOptionGroup(Sku sku, OptionGroup optionGroup)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/skus/{sku.ExternalCode}/option-groups:link");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                externalCode = optionGroup.ExternalCode,
+                merchantId = IFoodAPIService.Config.MerchantId,
+                order = sku.Sequence,
+                maxQuantity = optionGroup.MaxQuantity,
+                minQuantity = optionGroup.MinQuantity
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
             await ApiService.SendAsync(request);
         }
     }

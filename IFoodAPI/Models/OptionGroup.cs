@@ -3,13 +3,16 @@ using System.Collections.Generic;
 
 namespace IFoodAPI.Models
 {
-    public class Complement
+    public class OptionGroup
     {
         [JsonProperty("id")]
         public string Id { get; set; }
 
         [JsonProperty("code")]
         public string Code { get; set; }
+
+        [JsonProperty("externalCode")]
+        public string ExternalCode { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

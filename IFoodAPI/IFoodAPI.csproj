@@ -56,7 +56,7 @@
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Benefit.cs" />
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\Complement.cs" />
+    <Compile Include="Models\OptionGroup.cs" />
     <Compile Include="Models\ComplementOption.cs" />
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\Coordinates.cs" />
@@ -80,6 +80,7 @@
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Tracking.cs" />
     <Compile Include="Models\Unavailability.cs" />
+    <Compile Include="OptionGroupService.cs" />
     <Compile Include="OrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestaurantService.cs" />
