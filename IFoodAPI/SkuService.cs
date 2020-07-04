@@ -1,7 +1,9 @@
 ﻿using IFoodAPI.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +78,7 @@ namespace IFoodAPI
                 data.sellingOption = sku.SellingOption;
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/skus");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/skus");
             request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
             string requestContent = JsonConvert.SerializeObject(data);
@@ -145,6 +147,107 @@ namespace IFoodAPI
 
             string contentRequest = JsonConvert.SerializeObject(data);
             request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+
+        public static async Task Update(Sku sku)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            dynamic data = new ExpandoObject();
+            data.merchantId = IFoodAPIService.Config.MerchantId;
+            data.price = new
+            {
+                value = sku.Price.Value,
+                originalValue = sku.Price.OriginalValue,
+                promotional = sku.Price.Promotional
+            };
+            data.name = sku.Name;
+            data.description = sku.Description;
+
+            if (sku.SellingOption != null)
+            {
+                data.sellingMode = new
+                {
+                    minimum = sku.SellingOption.Mininum,
+                    increment = sku.SellingOption.Incremental,
+                    availableUnits = sku.SellingOption.AvailableUnits
+                };
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/skus/{sku.ExternalCode}");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            string requestContent = JsonConvert.SerializeObject(data);
+
+            MultipartFormDataContent content = new MultipartFormDataContent
+            {
+                { new StringContent(requestContent, Encoding.UTF8, "application/json"), "\"sku\"" }
+            };
+
+            request.Content = content;
+
+            await ApiService.SendAsync(request);
+        }
+
+        public static async Task Update(Sku sku, byte[] image, string imageExtension)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            dynamic data = new ExpandoObject();
+            data.merchantId = IFoodAPIService.Config.MerchantId;
+            data.price = new
+            {
+                value = sku.Price.Value,
+                originalValue = sku.Price.OriginalValue,
+                promotional = sku.Price.Promotional
+            };
+            data.name = sku.Name;
+            data.description = sku.Description;
+
+            if (sku.SellingOption != null)
+            {
+                data.sellingMode = new
+                {
+                    minimum = sku.SellingOption.Mininum,
+                    increment = sku.SellingOption.Incremental,
+                    availableUnits = sku.SellingOption.AvailableUnits
+                };
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/skus/{sku.ExternalCode}");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            string requestContent = JsonConvert.SerializeObject(data);
+
+            string imageName = $"{DateTime.Now.Ticks}.{imageExtension}";
+
+            MultipartFormDataContent content = new MultipartFormDataContent
+            {
+                { new StringContent(requestContent, Encoding.UTF8, "application/json"), "\"sku\"" },
+                { new StreamContent(new MemoryStream(image)), "\"file\"", imageName }
+            };
+
+            string c = await content.ReadAsStringAsync();
+
+            request.Content = content;
+
             await ApiService.SendAsync(request);
         }
     }
