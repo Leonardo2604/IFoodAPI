@@ -119,5 +119,33 @@ namespace IFoodAPI
             request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
             await ApiService.SendAsync(request);
         }
+
+        public static async Task UpdatePrice(Sku sku)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/skus/{sku.ExternalCode}/prices");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new 
+            {
+                merchantIds = new List<int> { IFoodAPIService.Config.MerchantId },
+                isPromotional = sku.Price.Promotional,
+                originalPrice = sku.Price.OriginalValue,
+                price = sku.Price.Value
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
     }
 }
