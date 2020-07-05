@@ -93,63 +93,6 @@ namespace IFoodAPI
             await ApiService.SendAsync(request);
         }
 
-        public static async Task LinkOptionGroup(Sku sku, OptionGroup optionGroup)
-        {
-            if (AuthService.Token == null)
-            {
-                // TODO: throw new Exception("Primeiro realize a authenticação")
-            }
-
-            if (IFoodAPIService.Config == null)
-            {
-                // TODO: throw new Exception("Configure primeiro o api")
-            }
-
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/skus/{sku.ExternalCode}/option-groups:link");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
-            {
-                externalCode = optionGroup.ExternalCode,
-                merchantId = IFoodAPIService.Config.MerchantId,
-                order = sku.Sequence,
-                maxQuantity = optionGroup.MaxQuantity,
-                minQuantity = optionGroup.MinQuantity
-            };
-
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
-        }
-
-        public static async Task UpdatePrice(Sku sku)
-        {
-            if (AuthService.Token == null)
-            {
-                // TODO: throw new Exception("Primeiro realize a authenticação")
-            }
-
-            if (IFoodAPIService.Config == null)
-            {
-                // TODO: throw new Exception("Configure primeiro o api")
-            }
-
-            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/skus/{sku.ExternalCode}/prices");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new 
-            {
-                merchantIds = new List<int> { IFoodAPIService.Config.MerchantId },
-                isPromotional = sku.Price.Promotional,
-                originalPrice = sku.Price.OriginalValue,
-                price = sku.Price.Value
-            };
-
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
-        }
-
         public static async Task Update(Sku sku)
         {
             if (AuthService.Token == null)
@@ -247,6 +190,94 @@ namespace IFoodAPI
             string c = await content.ReadAsStringAsync();
 
             request.Content = content;
+
+            await ApiService.SendAsync(request);
+        }
+        
+        public static async Task UpdatePrice(Sku sku)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/skus/{sku.ExternalCode}/prices");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                merchantIds = new List<int> { IFoodAPIService.Config.MerchantId },
+                isPromotional = sku.Price.Promotional,
+                originalPrice = sku.Price.OriginalValue,
+                price = sku.Price.Value
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+
+        public static async Task LinkOptionGroup(Sku sku, OptionGroup optionGroup)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/skus/{sku.ExternalCode}/option-groups:link");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            object data = new
+            {
+                externalCode = optionGroup.ExternalCode,
+                merchantId = IFoodAPIService.Config.MerchantId,
+                order = sku.Sequence,
+                maxQuantity = optionGroup.MaxQuantity,
+                minQuantity = optionGroup.MinQuantity
+            };
+
+            string contentRequest = JsonConvert.SerializeObject(data);
+            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+            await ApiService.SendAsync(request);
+        }
+
+        public static async Task Enable(Sku sku)
+        {
+            await ChangeStatus(sku, "AVAILABLE");
+        }
+
+        public static async Task Disable(Sku sku)
+        {
+            await ChangeStatus(sku, "UNAVAILABLE");
+        }
+         
+        private static async Task ChangeStatus(Sku sku, string status)
+        {
+            if (AuthService.Token == null)
+            {
+                // TODO: throw new Exception("Primeiro realize a authenticação")
+            }
+
+            if (IFoodAPIService.Config == null)
+            {
+                // TODO: throw new Exception("Configure primeiro o api")
+            }
+
+            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("PATCH"), $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/skus/{sku.ExternalCode}");
+            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+            string requestContent = JsonConvert.SerializeObject(new { status });
+            request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
 
             await ApiService.SendAsync(request);
         }
