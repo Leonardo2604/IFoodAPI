@@ -54,8 +54,10 @@
     <Compile Include="IFoodAPIService.cs" />
     <Compile Include="MerchantService.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Answer.cs" />
     <Compile Include="Models\Benefit.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Review.cs" />
     <Compile Include="Models\OptionGroup.cs" />
     <Compile Include="Models\ComplementOption.cs" />
     <Compile Include="Models\Config.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\OrderSubItem.cs" />
     <Compile Include="Models\Price.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\ReasonCancelation.cs" />
     <Compile Include="Models\Reference.cs" />
     <Compile Include="Models\Schedule.cs" />
@@ -80,11 +83,13 @@
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Tracking.cs" />
     <Compile Include="Models\Unavailability.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="OptionGroupService.cs" />
     <Compile Include="OrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestaurantService.cs" />
     <Compile Include="SkuService.cs" />
+    <Compile Include="SurveyService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
