@@ -59,7 +59,6 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Review.cs" />
     <Compile Include="Models\OptionGroup.cs" />
-    <Compile Include="Models\ComplementOption.cs" />
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\Coordinates.cs" />
     <Compile Include="Models\Customer.cs" />

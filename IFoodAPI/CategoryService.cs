@@ -27,12 +27,16 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Category>>(content);
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<Category>>(content);
+                }
+            }
         }
 
         /// <summary>
@@ -53,12 +57,16 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories/{category.Id}");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/merchants/{IFoodAPIService.Config.MerchantId}/menus/categories/{category.Id}"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Category>(content);
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<Category>(content);
+                }
+            }
         }
 
         /// <summary>
@@ -74,22 +82,24 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/categories");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new 
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/categories"))
             {
-                merchantId = IFoodAPIService.Config.MerchantId,
-                availability = category.Availability,
-                name = category.Name,
-                order = category.Order,
-                template = category.Template,
-                externalCode = category.ExternalCode
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                object data = new
+                {
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    availability = category.Availability,
+                    name = category.Name,
+                    order = category.Order,
+                    template = category.Template,
+                    externalCode = category.ExternalCode
+                };
+
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -105,21 +115,23 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories"))
             {
-                merchantId = IFoodAPIService.Config.MerchantId,
-                availability = category.Availability,
-                name = category.Name,
-                order = category.Order,
-                template = category.Template,
-                externalCode = category.ExternalCode
-            };
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                object data = new
+                {
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    availability = category.Availability,
+                    name = category.Name,
+                    order = category.Order,
+                    template = category.Template,
+                    externalCode = category.ExternalCode
+                };
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -135,21 +147,23 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "v1.0/categories"))
             {
-                merchantId = IFoodAPIService.Config.MerchantId,
-                availability = "DELETED",
-                name = category.Name,
-                order = category.Order,
-                template = category.Template,
-                externalCode = category.ExternalCode,
-            };
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                object data = new
+                {
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    availability = "DELETED",
+                    name = category.Name,
+                    order = category.Order,
+                    template = category.Template,
+                    externalCode = category.ExternalCode,
+                };
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -170,19 +184,21 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/categories/{category.ExternalCode}/skus:link");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/categories/{category.ExternalCode}/skus:link"))
             {
-                externalCode = sku.ExternalCode,
-                merchantId = IFoodAPIService.Config.MerchantId,
-                order = sku.Sequence
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                object data = new
+                {
+                    externalCode = sku.ExternalCode,
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    order = sku.Sequence
+                };
+
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -203,19 +219,21 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/categories/{category.ExternalCode}/skus:unlink");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/categories/{category.ExternalCode}/skus:unlink"))
             {
-                externalCode = sku.ExternalCode,
-                merchantId = IFoodAPIService.Config.MerchantId,
-                order = sku.Sequence
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                object data = new
+                {
+                    externalCode = sku.ExternalCode,
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    order = sku.Sequence
+                };
+
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
     }
 }

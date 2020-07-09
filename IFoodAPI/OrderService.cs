@@ -23,11 +23,16 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v3.0/orders/{@event.CorrelationId}");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Order>(content);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v3.0/orders/{@event.CorrelationId}"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<Order>(content);
+                }
+            }
         }
 
         /// <summary>
@@ -43,9 +48,12 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/integration");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/integration"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -60,9 +68,12 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/confirmation");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/confirmation"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -77,9 +88,12 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/dispatch");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/orders/{order.Reference}/statuses/dispatch"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -94,12 +108,14 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v3.0/orders/{order.Reference}/statuses/cancellationRequested");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v3.0/orders/{order.Reference}/statuses/cancellationRequested"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string contentRequest = JsonConvert.SerializeObject(reason);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                string contentRequest = JsonConvert.SerializeObject(reason);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -115,9 +131,12 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationAccepted");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationAccepted"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -133,9 +152,12 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationDenied");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/consumerCancellationDenied"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -152,10 +174,13 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/readyToDeliver");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            await ApiService.SendAsync(request);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v2.0/orders/{order.Reference}/statuses/readyToDeliver"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -174,12 +199,17 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/orders/{order.Reference}/tracking");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Tracking>(content);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/orders/{order.Reference}/tracking"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<Tracking>(content);
+                }
+            }
         }
     }
 }

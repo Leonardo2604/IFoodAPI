@@ -15,11 +15,16 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "v1.0/merchants");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Merchant>>(content);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "v1.0/merchants"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<Merchant>>(content);
+                }
+            }
         }
     }
 }

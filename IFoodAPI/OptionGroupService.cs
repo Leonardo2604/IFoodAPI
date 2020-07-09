@@ -20,23 +20,25 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/option-groups");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new 
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "v1.0/option-groups"))
             {
-                merchantId = IFoodAPIService.Config.MerchantId,
-                externalCode = optionGroup.ExternalCode,
-                maxQuantity = optionGroup.MaxQuantity,
-                minQuantity = optionGroup.MinQuantity,
-                name = optionGroup.Name,
-                sequence = optionGroup.Sequence
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string requestContent = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+                object data = new
+                {
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    externalCode = optionGroup.ExternalCode,
+                    maxQuantity = optionGroup.MaxQuantity,
+                    minQuantity = optionGroup.MinQuantity,
+                    name = optionGroup.Name,
+                    sequence = optionGroup.Sequence
+                };
 
-            await ApiService.SendAsync(request);
+                string requestContent = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         public static async Task Update(OptionGroup optionGroup)
@@ -51,22 +53,24 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"v1.0/option-groups/{optionGroup.ExternalCode}");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"v1.0/option-groups/{optionGroup.ExternalCode}"))
             {
-                merchantId = IFoodAPIService.Config.MerchantId,
-                maxQuantity = optionGroup.MaxQuantity,
-                minQuantity = optionGroup.MinQuantity,
-                name = optionGroup.Name,
-                sequence = optionGroup.Sequence
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string requestContent = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+                object data = new
+                {
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    maxQuantity = optionGroup.MaxQuantity,
+                    minQuantity = optionGroup.MinQuantity,
+                    name = optionGroup.Name,
+                    sequence = optionGroup.Sequence
+                };
 
-            await ApiService.SendAsync(request);
+                string requestContent = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
 
         /// <summary>
@@ -88,19 +92,21 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/option-groups/{optionGroup.ExternalCode}/skus:link");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-
-            object data = new
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"v1.0/option-groups/{optionGroup.ExternalCode}/skus:link"))
             {
-                externalCode = sku.ExternalCode,
-                merchantId = IFoodAPIService.Config.MerchantId,
-                order = sku.Sequence
-            };
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            string contentRequest = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                object data = new
+                {
+                    externalCode = sku.ExternalCode,
+                    merchantId = IFoodAPIService.Config.MerchantId,
+                    order = sku.Sequence
+                };
+
+                string contentRequest = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
     }
 }

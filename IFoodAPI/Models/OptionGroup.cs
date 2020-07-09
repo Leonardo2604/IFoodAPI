@@ -27,6 +27,6 @@ namespace IFoodAPI.Models
         public int MaxQuantity { get; set; }
 
         [JsonProperty("options")]
-        public List<ComplementOption> Options { get; set; }
+        public List<Sku> Options { get; set; }
     }
 }

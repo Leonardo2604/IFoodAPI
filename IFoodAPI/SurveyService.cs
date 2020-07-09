@@ -32,12 +32,16 @@ namespace IFoodAPI
             query["status"] = "ON_HOLD";
             query["merchant_ids[0]"] = IFoodAPIService.Config.MerchantId.ToString();
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/reviews?{query}");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"v1.0/reviews?{query}"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            HttpResponseMessage response =  await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Review>>(content);
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<Review>>(content);
+                }
+            }
         }
 
         /// <summary>
@@ -59,14 +63,17 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"survey/api/v1/reviews/{review.Id}/answers");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"survey/api/v1/reviews/{review.Id}/answers"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            object data = new { content };
+                object data = new { content };
 
-            string requestContent = JsonConvert.SerializeObject(data);
-            request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                string requestContent = JsonConvert.SerializeObject(data);
+                request.Content = new StringContent(requestContent, Encoding.UTF8, "application/json");
+                
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
     }
 }

@@ -24,24 +24,28 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}%3Apolling");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}%3Apolling"))
+            {
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
 
-            try
-            {
-                HttpResponseMessage response = await ApiService.SendAsync(request);
-                string content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<Event>>(content);
-            } 
-            catch (RequestException ex) 
-            {
-                if (ex.Code == (int)HttpStatusCode.NotFound)
+                try
                 {
-                    return new List<Event>();
+                    using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                    {
+                        string content = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<List<Event>>(content);
+                    }
                 }
-                else
+                catch (RequestException ex)
                 {
-                    throw ex;
+                    if (ex.Code == (int)HttpStatusCode.NotFound)
+                    {
+                        return new List<Event>();
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
             }
         }
@@ -63,20 +67,22 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Primeiro realize a authenticação")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/acknowledgment");
-            request.Headers.Add("Authorization", AuthService.Token.FullToken);
-            request.Headers.Add("Cache-Control", "no-cache");
-
-            List<object> parameters = new List<object> ();
-            
-            foreach (Event @event in events)
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/acknowledgment"))
             {
-                parameters.Add(new { id = @event.Id });
-            }
+                request.Headers.Add("Authorization", AuthService.Token.FullToken);
+                request.Headers.Add("Cache-Control", "no-cache");
 
-            string contentRequest = JsonConvert.SerializeObject(parameters);
-            request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
-            await ApiService.SendAsync(request);
+                List<object> parameters = new List<object>();
+
+                foreach (Event @event in events)
+                {
+                    parameters.Add(new { id = @event.Id });
+                }
+
+                string contentRequest = JsonConvert.SerializeObject(parameters);
+                request.Content = new StringContent(contentRequest, Encoding.UTF8, "application/json");
+                (await ApiService.SendAsync(request)).Dispose();
+            }
         }
     }
 }

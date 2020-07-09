@@ -17,20 +17,24 @@ namespace IFoodAPI
                 // TODO: throw new Exception("Configure primeiro o api")
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "oauth/token");
-            request.Headers.Add("ContentType", "multipart/form-data");
-            request.Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>()
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "oauth/token"))
             {
-                new KeyValuePair<string, string>("client_id", IFoodAPIService.Config.ClientId),
-                new KeyValuePair<string, string>("client_secret", IFoodAPIService.Config.ClientSecret),
-                new KeyValuePair<string, string>("username", IFoodAPIService.Config.Username),
-                new KeyValuePair<string, string>("password", IFoodAPIService.Config.Password),
-                new KeyValuePair<string, string>("grant_type", IFoodAPIService.Config.GrantType),
-            });
+                request.Headers.Add("ContentType", "multipart/form-data");
+                request.Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("client_id", IFoodAPIService.Config.ClientId),
+                    new KeyValuePair<string, string>("client_secret", IFoodAPIService.Config.ClientSecret),
+                    new KeyValuePair<string, string>("username", IFoodAPIService.Config.Username),
+                    new KeyValuePair<string, string>("password", IFoodAPIService.Config.Password),
+                    new KeyValuePair<string, string>("grant_type", IFoodAPIService.Config.GrantType),
+                });
 
-            HttpResponseMessage response = await ApiService.SendAsync(request);
-            string content = await response.Content.ReadAsStringAsync();
-            Token = JsonConvert.DeserializeObject<Token>(content);
+                using (HttpResponseMessage response = await ApiService.SendAsync(request))
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    Token = JsonConvert.DeserializeObject<Token>(content);
+                }
+            }
         }
     }
 }
